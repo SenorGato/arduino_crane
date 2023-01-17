@@ -2,15 +2,17 @@
 
     #define joyX A0
     #define joyY A1
+    #define ledPin 2
+    #define rstPin 6
+    #define slpPin 7
     #define dirPinX 8
     #define stepPinX 9
-    #define dirPinY 4
-    #define stepPinY 5
+    #define dirPinY 10
+    #define stepPinY 11
+    #define dirPinZ 12
+    #define stepPinZ 13
     #define buttPin 5
-    #define slpPin 7
-    #define rstPin 6
-    #define ledPin 2
-    #define NUM_LEDS    20  
+    #define NUM_LEDS 20  
     CRGB leds[NUM_LEDS];    
 
  void setup() {
@@ -69,10 +71,7 @@ void check_joystick() {
           digitalWrite(dirPinX, HIGH); //Clockwise
           Serial.write("stepPinX High steppin.");
           step_motor(1, stepPinX);
-         } else {
-           return;
-         }
-
+         } 
       int yValue = analogRead(joyY);
       if (yValue > 700) {
           digitalWrite(dirPinY, LOW);  //Counter-clockwise
@@ -96,7 +95,7 @@ delay(500);
 }
 
 void loop() {
-    step_motor(4);
+    step_motor(4, 5);
     check_joystick();
     //sleep_motors();
     //wake_motors();
