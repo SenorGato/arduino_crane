@@ -30,12 +30,16 @@
   FastLED.addLeds<WS2812, ledPin, GRB>(leds, NUM_LEDS);
 }
     
-void step_motor(int revs, int dirPin){
-    digitalWrite(dirPinX, HIGH);
+void step_motor(int revs, int stepPin, int dir){
+    if (dir == -1) {
+        digitalWrite((stepPin - 1), LOW);
+    } else if (dir == 1) {
+        digitalWrite((stepPin - 1), HIGH);
+    }
     for(int i =0; i < (200 * revs) ;i++) {
-    digitalWrite(stepPinX, HIGH);
+    digitalWrite(stepPin, HIGH);
     delayMicroseconds(1000);
-    digitalWrite(stepPinX, LOW);
+    digitalWrite(stepPin, LOW);
     delayMicroseconds(1000);
     }
 }
@@ -95,7 +99,7 @@ delay(500);
 }
 
 void loop() {
-    step_motor(4, 5);
+    step_motor(4, 5, -1);
     check_joystick();
     //sleep_motors();
     //wake_motors();
