@@ -1,3 +1,5 @@
+#include <FastLED.h>
+
     #define joyX A0
     #define joyY A1
     #define dirPinX 8
@@ -7,6 +9,9 @@
     #define buttPin 5
     #define slpPin 7
     #define rstPin 6
+    #define ledPin 2
+    #define NUM_LEDS    20  
+    CRGB leds[NUM_LEDS];    
 
      void setup() {
       Serial.begin(9600);
@@ -20,9 +25,10 @@
       digitalWrite(slpPin, HIGH);
       pinMode(rstPin, OUTPUT);
       digitalWrite(rstPin, HIGH);
+      FastLED.addLeds<WS2812, ledPin, GRB>(leds, NUM_LEDS);
     }
     
-    void step_motor(int revs){
+    void step_motor(int revs, int dirPin){
         digitalWrite(dirPinX, HIGH);
         for(int i =0; i < (200 * revs) ;i++) {
         digitalWrite(stepPinX, HIGH);
@@ -58,11 +64,11 @@ void check_joystick() {
           digitalWrite(dirPinX, LOW);  //Counter-clockwise
           Serial.write("stepPinX Low steppin.");
           Serial.write("\n");
-          //step_motor(1, stepPinX);
+          step_motor(1, stepPinX);
         } else if (xValue < 300) {
           digitalWrite(dirPinX, HIGH); //Clockwise
           Serial.write("stepPinX High steppin.");
-          //step_motor(1, stepPinX);
+          step_motor(1, stepPinX);
          } else {
            return;
          }
@@ -81,13 +87,23 @@ void check_joystick() {
         }
       }
 
+    void led_controller() {
+    for (int i = 0; i < NUM_LEDS; i++) {
+      leds[i] = CRGB(255, 0, 0);
+    }
+    FastLED.show();
+    delay(500); 
+    }
+
     void loop() {
       // put your main code here, to run repeatedly:
     step_motor(4);
-    sleep_motors();
-    wake_motors();
-    reset_motors();
-    delayMicroseconds(300);
+    check_joystick();
+    //sleep_motors();
+    //wake_motors();
+    //led_controler();
+   
+      delayMicroseconds(300);
      Serial.println(digitalRead(buttPin));
 
     }
