@@ -107,3 +107,71 @@ void check_joystick() {
      Serial.println(digitalRead(buttPin));
 
     }
+    #define joyX A0
+    #define joyY A1
+    #define dirPinX 2
+    #define stepPinX 3
+    #define dirPinY 4
+    #define stepPinY 5
+    #define buttPin 7
+
+     void setup() {
+      Serial.begin(9600);
+      pinMode(dirPinX, OUTPUT);
+      pinMode(stepPinX, OUTPUT);
+      pinMode(dirPinY, OUTPUT);
+      pinMode(stepPinY, OUTPUT);
+
+    }
+    
+    void spinMotor(int revs, char dir){
+          Serial.write("In spin motor.");
+          Serial.write("\n");  
+        int axis;
+        if (dir == 'X') {
+          Serial.write("In X?  Shouldn't be.");
+          Serial.write("\n");  
+          axis = 3;
+        } else {
+          Serial.write("In Y!  Should be.");
+          Serial.write("\n"); 
+          axis = 5;
+          }        
+        for(int i =0; i < (200 * revs) ;i++) {
+          digitalWrite(axis, HIGH);
+          delayMicroseconds(1000);
+          digitalWrite(axis, LOW);
+          delayMicroseconds(1000);
+        }
+    }
+void check_joystick() {
+      int xValue = analogRead(joyX);
+      int yValue = analogRead(joyY);
+      if (xValue > 511) {
+          digitalWrite(dirPinX, LOW);  //Counter-clockwise
+          Serial.write("stepPinX Low steppin.");
+          Serial.write("\n");
+          spinMotor(1, 'X');
+        } else {
+          digitalWrite(dirPinX, HIGH); //Clockwise
+          Serial.write("stepPinX High steppin.");
+          spinMotor(1, 'X');
+         }
+      if (yValue > 511) {
+          digitalWrite(dirPinY, LOW);  //Counter-clockwise
+          Serial.write("stepPinY Low steppin.");
+          Serial.write("\n");          
+          spinMotor(1, 'Y');
+        } else {
+          digitalWrite(dirPinY, HIGH); //Clockwise
+          Serial.write("stepPinY High steppin.");
+          Serial.write("\n");
+          spinMotor(1, 'Y');
+        }
+      
+    }
+
+    void loop() {
+      // put your main code here, to run repeatedly:
+      check_joystick();
+    }
